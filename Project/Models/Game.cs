@@ -48,13 +48,14 @@ The guards block your way, it's either them or you...
       //REVIEW (1st number = effect, 2nd number = accuracy/chance of success, 3rd number = cooldown/reload)
       Item cm = new Item("claymore", @"
     An enormous sword, outfitted with plasma tech.", HQ, 45, 85, 3);
-      Item wm = new Item("war machine", @"
+      Item wm = new Item("war_machine", @"
     1,500 RPM with electrically charged rounds.", HQ, 80, 33, 0);
       Item rpg = new Item("rpg", @"
     A rocket propelled grenade launcher. Ear protection recommended.", HQ, 70, 66, 7);
-      Item sr = new Item("sniper rifle", @"
+      Item sr = new Item("sniper_rifle", @"
     Accurate to 400 yards, rounds explode on contact.", HQ, 120, 85, 10);
-      Item hp = new Item("potion", @"Increases your health.", HQ, 15, 100, 0);
+      Item hp = new Item("potion", @"
+    Increases your health.", HQ, 15, 100, 0);
       //NOTE assign items to rooms
       HQ.Items.Add(cm);
       HQ.Items.Add(wm);

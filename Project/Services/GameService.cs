@@ -103,7 +103,7 @@ What's your plan?
           break;
         // case "g":
         case "give":
-          GiveItem(option, option);
+          GiveItem(option);
           break;
         case "go":
           Go(option);
@@ -159,15 +159,15 @@ What's your plan?
         Messages.Add(@"
 After some exploring you find:
       ");
-        foreach (Item i in _game.CurrentRoom.Items)
-        {
-          Messages.Add($" {i.Name}: \n{i.Description}");
-          Messages.Add($" {i.Effect} \n");
-        }
         foreach (Character c in _game.CurrentRoom.Characters)
         {
           Messages.Add($" {c.Name} is here. \n{c.Description}");
           Messages.Add($" Health: {c.Health} \n");
+        }
+        foreach (Item i in _game.CurrentRoom.Items)
+        {
+          Messages.Add($" {i.Name}: \n{i.Description}");
+          Messages.Add($" {i.Effect} \n");
         }
       }
     }
@@ -223,7 +223,7 @@ After some exploring you find:
         _game.CurrentRoom.Items.Remove(i);
         _game.CurrentPlayer.Inventory.Add(i);
         _game.CurrentPlayer.Slots--;
-        Messages.Add($"You grab your trusty {i.Name} for whatever lies ahead...");
+        Messages.Add($"You grab your trusty {i.Name}.");
         Messages.Add($"{i.Effect} damage");
       }
       else
@@ -231,15 +231,14 @@ After some exploring you find:
         Messages.Add("There's no " + itemName + " here...");
       }
     }
-    public void GiveItem(string characterName, string itemName)
+    public void GiveItem(string input)
     {
-      var inputs = Console.ReadLine().Split(' ');
-      characterName = inputs[1];
-      itemName = inputs[2];
+      Console.WriteLine(input);
+      var inputs = input.Split(' ');
       Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
       foreach (Character character in _game.CurrentRoom.Characters)
       {
-        if (character.Name == inputs[1])
+        if (character.Name == inputs[0])
         {
           c = character;
         }
@@ -247,7 +246,7 @@ After some exploring you find:
       Item i = new Item(null, null, null, 0, 0, 0);
       foreach (Item item in _game.CurrentPlayer.Inventory)
       {
-        if (item.Name == inputs[2])
+        if (item.Name == inputs[1])
         {
           i = item;
         }
@@ -270,8 +269,8 @@ After some exploring you find:
         c.Inventory.Add(i);
         _game.CurrentPlayer.Slots++;
         c.Slots--;
-        Messages.Add($"You grab your trusty {i.Name} and toss it to {i.Name}");
-        Messages.Add($"{i.Effect} damage");
+        Messages.Add($"You grab your trusty {i.Name} and toss it to {c.Name}");
+        Messages.Add($"{i.Effect}");
       }
       else
       {
