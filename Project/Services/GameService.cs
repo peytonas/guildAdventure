@@ -36,16 +36,16 @@ namespace guildAdventure.Project
  |___/ |___|/_/ \_\   |_|   |_||_|  |___/  |_|   |_|   |___||_|_\|___| 
                                                                        
       ");
-      //       TypeLine(@"
-      // It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
-      // Whispers tell of a power source that has been abused for centuries...
-      // If left unchecked, this abuse will continue to the destruction of your world... 
-      // The future is in your hands...");
-      Console.WriteLine(@"
+      TypeLine(@"
 It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
 Whispers tell of a power source that has been abused for centuries...
 If left unchecked, this abuse will continue to the destruction of your world... 
 The future is in your hands...");
+      //       Console.WriteLine(@"
+      // It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
+      // Whispers tell of a power source that has been abused for centuries...
+      // If left unchecked, this abuse will continue to the destruction of your world... 
+      // The future is in your hands...");
       Print();
       while (playing)
       {
@@ -101,7 +101,7 @@ What's your plan?
         case "look":
           Look();
           break;
-        // case "g":
+        case "g":
         case "give":
           GiveItem(option);
           break;
@@ -138,7 +138,7 @@ What's your plan?
     }
     public void Help()
     {
-      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\ntake + item name: takes item found in current room\n(g)ive + character name + item name = gives character specified item\n(i)nventory: checks party inventory\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
+      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\ntake + item name: takes item found in current room\n(g)ive + character name + item name = gives character specified item\n(i)nventory: checks your inventory\n(v)iew + character name: views character stats/inventory\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
     }
     public void Look()
     {
@@ -157,7 +157,7 @@ What's your plan?
       {
 
         Messages.Add(@"
-After some exploring you find:
+After looking around you find:
       ");
         foreach (Character c in _game.CurrentRoom.Characters)
         {
@@ -189,10 +189,10 @@ After some exploring you find:
           Messages.Add($" {character.Description}");
           Messages.Add($" HP: {character.Health}");
           Messages.Add($" Inventory: ");
-        }
-        foreach (Item item in character.Inventory)
-        {
-          Messages.Add($" {item.Name}, {item.Effect} ");
+          foreach (Item item in character.Inventory)
+          {
+            Messages.Add($" {item.Name}, {item.Effect} ");
+          }
         }
       }
     }
@@ -224,7 +224,7 @@ After some exploring you find:
         _game.CurrentPlayer.Inventory.Add(i);
         _game.CurrentPlayer.Slots--;
         Messages.Add($"You grab your trusty {i.Name}.");
-        Messages.Add($"{i.Effect} damage");
+        Messages.Add($"{i.Effect}");
       }
       else
       {
@@ -274,7 +274,7 @@ After some exploring you find:
       }
       else
       {
-        Messages.Add($"You don't have a {i.Name} to give {c.Name}");
+        Messages.Add("You don't have a " + inputs[1] + " to give " + c.Name + ".");
       }
     }
     public void Go(string direction)

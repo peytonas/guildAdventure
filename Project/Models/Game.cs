@@ -43,7 +43,8 @@ The guards block your way, it's either them or you...
       Player ps = new Player("peyton", 100, 3);
       //NOTE initializes character
       Character a1 = new Character("alpha", 100, @"An assassin bot you hijacked a few years back. Loyal...ish.", HQ, 3);
-      Character rg = new Character("royal guard", 250, @"Don't be fooled by the robes, they're hiding armor made from that metal you found earlier.", TF, 0);
+      Character ga = new Character("gamma", 150, @"Your loyal, bio-enhanced hound.", HQ, 2);
+      Character rg = new Character("a royal guard", 250, @"Don't be fooled by the robes, he's hiding armor made from that metal you found earlier.", TF, 0);
       //NOTE initializes items 
       //REVIEW (1st number = effect, 2nd number = accuracy/chance of success, 3rd number = cooldown/reload)
       Item cm = new Item("claymore", @"
@@ -66,6 +67,7 @@ The guards block your way, it's either them or you...
       HQ.Items.Add(hp);
       //NOTE assign characters to rooms
       HQ.Characters.Add(a1);
+      HQ.Characters.Add(ga);
       TF.Characters.Add(rg);
       TF.Characters.Add(rg);
       //NOTE starting point
