@@ -21,8 +21,9 @@ namespace guildAdventure.Project.Interfaces
     // //NOTE Validate CurrentRoom.Exits contains the desired direction
     // //NOTE if it does change the CurrentRoom
     void Go(string direction);
-    void TakeItem(string itemName);
-    void GiveItem(string input);
+    void GrabItem(string itemName);
+    void GiveTo(string input);
+    void TakeFrom(string input);
     // void UseItem(string itemName);
     // //NOTE Print the list of items in the players inventory to the console
     void Inventory();

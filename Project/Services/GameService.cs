@@ -36,16 +36,16 @@ namespace guildAdventure.Project
  |___/ |___|/_/ \_\   |_|   |_||_|  |___/  |_|   |_|   |___||_|_\|___| 
                                                                        
       ");
-      TypeLine(@"
-It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
-Whispers tell of a power source that has been abused for centuries...
-If left unchecked, this abuse will continue to the destruction of your world... 
-The future is in your hands...");
-      //       Console.WriteLine(@"
+      //       TypeLine(@"
       // It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
       // Whispers tell of a power source that has been abused for centuries...
       // If left unchecked, this abuse will continue to the destruction of your world... 
       // The future is in your hands...");
+      Console.WriteLine(@"
+      It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
+      Whispers tell of a power source that has been abused for centuries...
+      If left unchecked, this abuse will continue to the destruction of your world... 
+      The future is in your hands...");
       Print();
       while (playing)
       {
@@ -74,40 +74,46 @@ What's your plan?
       Console.Clear();
       switch (command)
       {
-        // case "use":
-        //   UseItem(option);
-        //   break;
-        case "t":
-        case "take":
-          TakeItem(option);
+
+        case "h":
+        case "help":
+          Help();
           break;
-        case "s":
-        case "search":
-          Search();
+        case "go":
+          Go(option);
           break;
         case "i":
         case "inventory":
           Inventory();
           break;
-        case "v":
-        case "view":
-          ViewCharacter(option);
-          break;
-        case "h":
-        case "help":
-          Help();
-          break;
         case "l":
         case "look":
           Look();
           break;
-        case "g":
+        case "s":
+        case "search":
+          Search();
+          break;
+        case "v":
+        case "view":
+          ViewCharacter(option);
+          break;
+        case "grab":
+          GrabItem(option);
+          break;
+        case "d":
+        case "drop":
+          DropItem(option);
+          break;
         case "give":
-          GiveItem(option);
+          GiveTo(option);
           break;
-        case "go":
-          Go(option);
+        case "take":
+          TakeFrom(option);
           break;
+        // case "use":
+        //   UseItem(option);
+        //   break;
         case "reset":
         case "yes":
           Run();
@@ -138,7 +144,7 @@ What's your plan?
     }
     public void Help()
     {
-      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\ntake + item name: takes item found in current room\n(g)ive + character name + item name = gives character specified item\n(i)nventory: checks your inventory\n(v)iew + character name: views character stats/inventory\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
+      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(i)nventory: checks your inventory\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\n(v)iew + character name: views character stats/inventory\ngrab + item name: grabs item found in current room\n(d)rop + item name: drops specified item in inventory\n(g)ive + character name + item name = gives character specified item\ntake + item name + character name: takes item from character and adds it to your inventory\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
     }
     public void Look()
     {
@@ -167,7 +173,6 @@ After looking around you find:
         foreach (Item i in _game.CurrentRoom.Items)
         {
           Messages.Add($" {i.Name}: \n{i.Description}");
-          Messages.Add($" {i.Effect} \n");
         }
       }
     }
@@ -176,7 +181,7 @@ After looking around you find:
       Messages.Add("Inventory:");
       for (int i = 0; i < _game.CurrentPlayer.Inventory.Count; i++)
       {
-        Messages.Add($"{_game.CurrentPlayer.Inventory[i].Name}: {_game.CurrentPlayer.Inventory[i].Effect}");
+        Messages.Add($"{_game.CurrentPlayer.Inventory[i].Name}");
       }
     }
     public void ViewCharacter(string characterName)
@@ -191,12 +196,12 @@ After looking around you find:
           Messages.Add($" Inventory: ");
           foreach (Item item in character.Inventory)
           {
-            Messages.Add($" {item.Name}, {item.Effect} ");
+            Messages.Add($" {item.Name}");
           }
         }
       }
     }
-    public void TakeItem(string itemName)
+    public void GrabItem(string itemName)
     {
       Item i = new Item(null, null, null, 0, 0, 0);
       foreach (Item item in _game.CurrentRoom.Items)
@@ -216,7 +221,6 @@ After looking around you find:
         _game.CurrentPlayer.Inventory.Add(i);
         _game.CurrentPlayer.Slots--;
         Messages.Add($"You're not sure how this could help, but better safe than sorry! You grab the {i.Name} and take it with you...");
-        Messages.Add($"{i.Effect} damage");
       }
       else if (i.Name != null && _game.CurrentRoom.Name == "at Headquarters")
       {
@@ -224,16 +228,26 @@ After looking around you find:
         _game.CurrentPlayer.Inventory.Add(i);
         _game.CurrentPlayer.Slots--;
         Messages.Add($"You grab your trusty {i.Name}.");
-        Messages.Add($"{i.Effect}");
       }
       else
       {
         Messages.Add("There's no " + itemName + " here...");
       }
     }
-    public void GiveItem(string input)
+    public void DropItem(string itemName)
     {
-      Console.WriteLine(input);
+      foreach (Item item in _game.CurrentPlayer.Inventory)
+      {
+        if (item.Name == itemName)
+        {
+          _game.CurrentRoom.Items.Add(item);
+          _game.CurrentPlayer.Inventory.Remove(item);
+          _game.CurrentPlayer.Slots++;
+        }
+      }
+    }
+    public void GiveTo(string input)
+    {
       var inputs = input.Split(' ');
       Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
       foreach (Character character in _game.CurrentRoom.Characters)
@@ -270,11 +284,46 @@ After looking around you find:
         _game.CurrentPlayer.Slots++;
         c.Slots--;
         Messages.Add($"You grab your trusty {i.Name} and toss it to {c.Name}");
-        Messages.Add($"{i.Effect}");
       }
       else
       {
         Messages.Add("You don't have a " + inputs[1] + " to give " + c.Name + ".");
+      }
+    }
+    public void TakeFrom(string input)
+    {
+      var inputs = input.Split(' ');
+      Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
+      foreach (Character character in _game.CurrentRoom.Characters)
+      {
+        if (character.Name == inputs[1])
+        {
+          c = character;
+        }
+      }
+      Item i = new Item(null, null, null, 0, 0, 0);
+      foreach (Item item in c.Inventory)
+      {
+        if (item.Name == inputs[0])
+        {
+          i = item;
+        }
+      }
+      if (_game.CurrentPlayer.Slots == 0)
+      {
+        Messages.Add("You don't have room to carry that. You'll need to drop something or move on...");
+      }
+      else if (i.Name != null)
+      {
+        _game.CurrentPlayer.Inventory.Add(i);
+        c.Inventory.Remove(i);
+        _game.CurrentPlayer.Slots--;
+        c.Slots++;
+        Messages.Add($"You take the {i.Name} from {c.Name}.");
+      }
+      else
+      {
+        Messages.Add(c.Name + " doesn't have a " + inputs[1] + " to give you.");
       }
     }
     public void Go(string direction)

@@ -21,6 +21,8 @@ This is your home base. Come here to rest, plan, or store inventory for later.",
       Room B = new Room("in The Borders", @"
 The city has been quiet for a few years now, but you'll need to move quickly. You never know who's watching...
       ", false);
+      Room D = new Room("at The Dump", @"
+Not a pleasant place, but there's always something to find.", false);
       Room DT = new Room("Downtown", @"
 Silence reigns. Ash, soot, and crumbled remains surround The Foundry, bellowing smoke as it has since time immemorial...
 The first living things you've seen in the city stand ahead: two heavily armored guards, intent on your demise...
@@ -35,6 +37,8 @@ The guards block your way, it's either them or you...
       HQ.Exits.Add("south", B);
       B.Exits.Add("north", HQ);
       B.Exits.Add("south", DT);
+      B.Exits.Add("west", D);
+      D.Exits.Add("east", B);
       DT.Exits.Add("north", B);
       DT.Exits.Add("south", TF);
       TF.Exits.Add("north", DT);
@@ -57,6 +61,8 @@ The guards block your way, it's either them or you...
     Accurate to 400 yards, rounds explode on contact.", HQ, 120, 85, 10);
       Item hp = new Item("potion", @"
     Increases your health.", HQ, 15, 100, 0);
+      Item mm = new Item("mysterium", @"
+    Mystery metal. You'll need to find someone who knows where this came from...", D, 0, 0, 0);
       //NOTE assign items to rooms
       HQ.Items.Add(cm);
       HQ.Items.Add(wm);
@@ -65,6 +71,7 @@ The guards block your way, it's either them or you...
       HQ.Items.Add(hp);
       HQ.Items.Add(hp);
       HQ.Items.Add(hp);
+      D.Items.Add(mm);
       //NOTE assign characters to rooms
       HQ.Characters.Add(a1);
       HQ.Characters.Add(ga);
