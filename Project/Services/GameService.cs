@@ -24,7 +24,7 @@ namespace guildAdventure.Project
     {
       Reset();
       Console.Clear();
-      Console.ForegroundColor = ConsoleColor.Red;
+      Console.ForegroundColor = ConsoleColor.Green;
       Console.WriteLine(@"
        (                              )             )   (     (    (         
  )\ )         (       *   )  ( /(     (    ( /(   )\ )  )\ ) )\ )      
@@ -42,10 +42,10 @@ namespace guildAdventure.Project
       // If left unchecked, this abuse will continue to the destruction of your world... 
       // The future is in your hands...");
       Console.WriteLine(@"
-      It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
-      Whispers tell of a power source that has been abused for centuries...
-      If left unchecked, this abuse will continue to the destruction of your world... 
-      The future is in your hands...");
+It is 3070 AE. You and your companions survive in a world of scorched earth, techno-mysticism, and blood. 
+Whispers tell of a power source that has been abused for centuries...
+If left unchecked, this abuse will continue to the destruction of your world... 
+The future is in your hands...");
       Print();
       while (playing)
       {
@@ -94,8 +94,8 @@ What's your plan?
         case "search":
           Search();
           break;
-        case "v":
-        case "view":
+        case "c":
+        case "check":
           ViewCharacter(option);
           break;
         case "grab":
@@ -110,6 +110,12 @@ What's your plan?
           break;
         case "take":
           TakeFrom(option);
+          break;
+        case "add":
+          AddToParty(option);
+          break;
+        case "view_party":
+          ViewParty();
           break;
         // case "use":
         //   UseItem(option);
@@ -144,7 +150,7 @@ What's your plan?
     }
     public void Help()
     {
-      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(i)nventory: checks your inventory\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\n(v)iew + character name: views character stats/inventory\ngrab + item name: grabs item found in current room\n(d)rop + item name: drops specified item in inventory\n(g)ive + character name + item name = gives character specified item\ntake + item name + character name: takes item from character and adds it to your inventory\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
+      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(i)nventory: checks your inventory\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\n(c)heck + character name: check character stats/inventory\ngrab + item name: grabs item found in current room\n(d)rop + item name: drops specified item in inventory\n(g)ive + character name + item name = gives character specified item\ntake + item name + character name: takes item from character and adds it to your inventory\nadd + character name: adds selected character to your party\nview_party: shows members of party\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
     }
     public void Look()
     {
@@ -174,6 +180,35 @@ After looking around you find:
         {
           Messages.Add($" {i.Name}: \n{i.Description}");
         }
+      }
+    }
+    public void AddToParty(string characterName)
+    {
+      Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
+      foreach (Character character in _game.CurrentRoom.Characters)
+      {
+        if (_game.CurrentRoom.Name == "at Headquarters")
+        {
+          if (character.Name == characterName)
+          {
+            c = character;
+          }
+        }
+        else
+        {
+          Messages.Add("Nobody here to add.");
+        }
+      }
+      _game.CurrentPlayer.Party.Add(c);
+      _game.CurrentRoom.Characters.Remove(c);
+      Messages.Add($"{c.Name} joined the party!");
+    }
+    public void ViewParty()
+    {
+      Messages.Add("Party:");
+      for (int i = 0; i < _game.CurrentPlayer.Party.Count; i++)
+      {
+        Messages.Add($"{_game.CurrentPlayer.Party[i].Name}");
       }
     }
     public void Inventory()
@@ -236,15 +271,18 @@ After looking around you find:
     }
     public void DropItem(string itemName)
     {
+      Item i = new Item(null, null, null, 0, 0, 0);
       foreach (Item item in _game.CurrentPlayer.Inventory)
       {
         if (item.Name == itemName)
         {
-          _game.CurrentRoom.Items.Add(item);
-          _game.CurrentPlayer.Inventory.Remove(item);
-          _game.CurrentPlayer.Slots++;
+          i = item;
         }
       }
+      _game.CurrentPlayer.Inventory.Remove(i);
+      _game.CurrentRoom.Items.Add(i);
+      _game.CurrentPlayer.Slots++;
+      Messages.Add($"Dropped your {i.Name}");
     }
     public void GiveTo(string input)
     {
@@ -328,7 +366,6 @@ After looking around you find:
     }
     public void Go(string direction)
     {
-      Console.ForegroundColor = ConsoleColor.Red;
       string from = _game.CurrentRoom.Name;
       _game.CurrentRoom = _game.CurrentRoom.Go(direction);
       string to = _game.CurrentRoom.Name;

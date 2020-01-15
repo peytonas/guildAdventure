@@ -9,5 +9,6 @@ namespace guildAdventure.Project.Interfaces
     int Health { get; set; }
     int Slots { get; set; }
     List<Item> Inventory { get; set; }
+    List<Character> Party { get; set; }
   }
 }

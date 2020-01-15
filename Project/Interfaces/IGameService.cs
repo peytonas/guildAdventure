@@ -27,6 +27,7 @@ namespace guildAdventure.Project.Interfaces
     // void UseItem(string itemName);
     // //NOTE Print the list of items in the players inventory to the console
     void Inventory();
+    void AddToParty(string input);
     void ViewCharacter(string characterName);
     // void CharacterInventory(string characterName);
     // //NOTE Display the CurrentRoom Description, Exits, and Items
