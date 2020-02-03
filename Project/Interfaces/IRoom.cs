@@ -7,7 +7,6 @@ namespace guildAdventure.Project.Interfaces
     string Name { get; set; }
     string Description { get; set; }
     List<IItem> Items { get; set; }
-    List<ICharacter> Characters { get; set; }
     Dictionary<string, IRoom> Exits { get; set; }
     // bool Blocked { get; set; }
     IRoom Go(string direction);

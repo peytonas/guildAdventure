@@ -8,14 +8,12 @@ namespace guildAdventure.Project.Models
     public string Name { get; set; }
     public int Health { get; set; }
     public List<Item> Inventory { get; set; }
-    public List<Character> Party { get; set; }
     public int Slots { get; set; }
     public Player(string name, int health, int slots)
     {
       Name = name;
       Health = health;
       Inventory = new List<Item>();
-      Party = new List<Character>();
       Slots = slots;
     }
   }

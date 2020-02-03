@@ -9,7 +9,6 @@ namespace guildAdventure.Project.Models
     public string Name { get; set; }
     public string Description { get; set; }
     public List<IItem> Items { get; set; }
-    public List<ICharacter> Characters { get; set; }
     public Dictionary<string, IRoom> Exits { get; set; }
     public bool Blocked { get; set; }
 
@@ -30,7 +29,6 @@ namespace guildAdventure.Project.Models
       Name = name;
       Description = description;
       Items = new List<IItem>();
-      Characters = new List<ICharacter>();
       Exits = new Dictionary<string, IRoom>();
       Blocked = blocked;
     }

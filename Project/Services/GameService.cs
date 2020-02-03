@@ -94,32 +94,19 @@ What's your plan?
         case "search":
           Search();
           break;
-        case "c":
-        case "check":
-          ViewCharacter(option);
-          break;
-        case "grab":
+        case "take":
           GrabItem(option);
+          break;
+        case "use":
+          Use(option);
           break;
         case "d":
         case "drop":
           DropItem(option);
           break;
-        case "give":
-          GiveTo(option);
+        case "attack":
+          Attack(option);
           break;
-        case "take":
-          TakeFrom(option);
-          break;
-        case "add":
-          AddToParty(option);
-          break;
-        case "view_party":
-          ViewParty();
-          break;
-        // case "use":
-        //   UseItem(option);
-        //   break;
         case "reset":
         case "yes":
           Run();
@@ -142,15 +129,12 @@ What's your plan?
     }
     public void Reset()
     {
-      // _game.CurrentPlayer.Inventory.Clear();
-      // if (_game.CurrentRoom.Name != "north")
-      // {
-      //   _game.Setup();
-      // }
+      _game.CurrentPlayer.Inventory.Clear();
+      _game.Setup();
     }
     public void Help()
     {
-      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(i)nventory: checks your inventory\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\n(c)heck + character name: check character stats/inventory\ngrab + item name: grabs item found in current room\n(d)rop + item name: drops specified item in inventory\n(g)ive + character name + item name = gives character specified item\ntake + item name + character name: takes item from character and adds it to your inventory\nadd + character name: adds selected character to your party\nview_party: shows members of party\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
+      Messages.Add("Type:\ngo + north, south, east, west: travel in specified direction\n(i)nventory: checks your inventory\n(l)ook: repeats location and room description\n(s)earch: searches the immediate area for hints\ntake + item name: grabs item found in current room\n(d)rop + item name: drops specified item in inventory\nuse + item name: uses an item in your inventory\nreset/yes: starts game over at beginning\n(q)/no: quits application");
     }
     public void Look()
     {
@@ -160,55 +144,50 @@ What's your plan?
     }
     public void Search()
     {
-      if (_game.CurrentRoom.Items.Count == 0 && _game.CurrentRoom.Characters.Count == 0)
+      if (_game.CurrentRoom.Items.Count == 0)
       {
         Messages.Add("Nothing to be found here...");
         return;
       }
       else
       {
-
         Messages.Add(@"
 After looking around you find:
       ");
-        foreach (Character c in _game.CurrentRoom.Characters)
-        {
-          Messages.Add($" {c.Name} is here. \n{c.Description}");
-          Messages.Add($" Health: {c.Health} \n");
-        }
         foreach (Item i in _game.CurrentRoom.Items)
         {
           Messages.Add($" {i.Name}: \n{i.Description}");
         }
       }
     }
-    public void AddToParty(string characterName)
+    public void Attack(string input)
     {
-      Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
-      foreach (Character character in _game.CurrentRoom.Characters)
+
+    }
+    public void Use(string input)
+    {
+      if (_game.CurrentRoom.Name == "in the Badlands")
       {
-        if (_game.CurrentRoom.Name == "at Headquarters")
+        foreach (Item i in _game.CurrentPlayer.Inventory)
         {
-          if (character.Name == characterName)
+          if (i.Name.ToLower() == "mysterium")
           {
-            c = character;
+            Console.WriteLine(@"
+After some negotiation at gunpoint, you offer the tribesmen your mysterium.
+Their leader snatches it from you, inspects it, and removes his mask...
+'If you are able to continue to offer such valuable resources, our victory would be all but certain.'
+An uneasy alliance has been brokered. Best hope you can find more of that stuff, but for now...
+ __   __  _______  __   __    _     _  ___   __    _ 
+|  | |  ||       ||  | |  |  | | _ | ||   | |  |  | |
+|  |_|  ||   _   ||  | |  |  | || || ||   | |   |_| |
+|       ||  | |  ||  |_|  |  |       ||   | |       |
+|_     _||  |_|  ||       |  |       ||   | |  _    |
+  |   |  |       ||       |  |   _   ||   | | | |   |
+  |___|  |_______||_______|  |__| |__||___| |_|  |__|
+            ");
+            Environment.Exit(0);
           }
         }
-        else
-        {
-          Messages.Add("Nobody here to add.");
-        }
-      }
-      _game.CurrentPlayer.Party.Add(c);
-      _game.CurrentRoom.Characters.Remove(c);
-      Messages.Add($"{c.Name} joined the party!");
-    }
-    public void ViewParty()
-    {
-      Messages.Add("Party:");
-      for (int i = 0; i < _game.CurrentPlayer.Party.Count; i++)
-      {
-        Messages.Add($"{_game.CurrentPlayer.Party[i].Name}");
       }
     }
     public void Inventory()
@@ -219,23 +198,7 @@ After looking around you find:
         Messages.Add($"{_game.CurrentPlayer.Inventory[i].Name}");
       }
     }
-    public void ViewCharacter(string characterName)
-    {
-      foreach (Character character in _game.CurrentRoom.Characters)
-      {
-        if (character.Name == characterName)
-        {
-          Messages.Add($" Name: {character.Name}");
-          Messages.Add($" {character.Description}");
-          Messages.Add($" HP: {character.Health}");
-          Messages.Add($" Inventory: ");
-          foreach (Item item in character.Inventory)
-          {
-            Messages.Add($" {item.Name}");
-          }
-        }
-      }
-    }
+
     public void GrabItem(string itemName)
     {
       Item i = new Item(null, null, null, 0, 0, 0);
@@ -284,86 +247,6 @@ After looking around you find:
       _game.CurrentPlayer.Slots++;
       Messages.Add($"Dropped your {i.Name}");
     }
-    public void GiveTo(string input)
-    {
-      var inputs = input.Split(' ');
-      Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
-      foreach (Character character in _game.CurrentRoom.Characters)
-      {
-        if (character.Name == inputs[0])
-        {
-          c = character;
-        }
-      }
-      Item i = new Item(null, null, null, 0, 0, 0);
-      foreach (Item item in _game.CurrentPlayer.Inventory)
-      {
-        if (item.Name == inputs[1])
-        {
-          i = item;
-        }
-      }
-      if (c.Slots == 0)
-      {
-        Messages.Add("They don't have room to carry that. They'll need to drop something or move on...");
-      }
-      else if (i.Name != null && _game.CurrentRoom.Name != "at Headquarters")
-      {
-        _game.CurrentPlayer.Inventory.Remove(i);
-        c.Inventory.Add(i);
-        _game.CurrentPlayer.Slots++;
-        c.Slots--;
-        Messages.Add($"You hand off the {i.Name} to {c.Name} and hope they know what to do with it...");
-      }
-      else if (i.Name != null && _game.CurrentRoom.Name == "at Headquarters")
-      {
-        _game.CurrentPlayer.Inventory.Remove(i);
-        c.Inventory.Add(i);
-        _game.CurrentPlayer.Slots++;
-        c.Slots--;
-        Messages.Add($"You grab your trusty {i.Name} and toss it to {c.Name}");
-      }
-      else
-      {
-        Messages.Add("You don't have a " + inputs[1] + " to give " + c.Name + ".");
-      }
-    }
-    public void TakeFrom(string input)
-    {
-      var inputs = input.Split(' ');
-      Character c = new Character(null, 0, null, _game.CurrentRoom, 3);
-      foreach (Character character in _game.CurrentRoom.Characters)
-      {
-        if (character.Name == inputs[1])
-        {
-          c = character;
-        }
-      }
-      Item i = new Item(null, null, null, 0, 0, 0);
-      foreach (Item item in c.Inventory)
-      {
-        if (item.Name == inputs[0])
-        {
-          i = item;
-        }
-      }
-      if (_game.CurrentPlayer.Slots == 0)
-      {
-        Messages.Add("You don't have room to carry that. You'll need to drop something or move on...");
-      }
-      else if (i.Name != null)
-      {
-        _game.CurrentPlayer.Inventory.Add(i);
-        c.Inventory.Remove(i);
-        _game.CurrentPlayer.Slots--;
-        c.Slots++;
-        Messages.Add($"You take the {i.Name} from {c.Name}.");
-      }
-      else
-      {
-        Messages.Add(c.Name + " doesn't have a " + inputs[1] + " to give you.");
-      }
-    }
     public void Go(string direction)
     {
       string from = _game.CurrentRoom.Name;
@@ -371,10 +254,36 @@ After looking around you find:
       string to = _game.CurrentRoom.Name;
       string desc = _game.CurrentRoom.Description;
       int inv = _game.CurrentPlayer.Inventory.Count;
+      Item i = _game.CurrentPlayer.Inventory.Find(x => x.Name == "mysterium");
       if (from == to)
       {
         Messages.Add("Some hero you are...Let's get moving.");
         return;
+      };
+      if (to == "at The Foundry")
+      {
+        Console.WriteLine(@"
+You should know better than to wander around downtown without backup.
+The royal guard spotted you three blocks away and had you in their crosshairs as soon as you made it downtown.
+Without so much as a hint...
+        ");
+        GameOver();
+      }
+      if (to == "in the Badlands" && i == null)
+      {
+        Console.WriteLine(@"
+You shouldn't have come out here with nothing to bargain with.
+The tribes find you immediately and quickly determine your worth.
+  ");
+        GameOver();
+      }
+      else if (to == "in the Badlands")
+      {
+        Messages.Add(@"
+You can't shake the feeling you're being watched.
+After wandering for a few miles, you've sprung an ambush and the tribes have you surrounded...
+Good thing you've got that mysterium to offer!
+");
       }
       else
       {
@@ -393,6 +302,22 @@ After looking around you find:
         Console.Write(line[i]);
         System.Threading.Thread.Sleep(50); // Sleep for 150 milliseconds
       }
+    }
+    public void GameOver()
+    {
+      Console.WriteLine(@"
+▓██   ██▓ ▒█████   █    ██    ▓█████▄  ██▓▓█████ ▓█████▄ 
+ ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▒██▀ ██▌▓██▒▓█   ▀ ▒██▀ ██▌
+  ▒██ ██░▒██░  ██▒▓██  ▒██░   ░██   █▌▒██▒▒███   ░██   █▌
+  ░ ▐██▓░▒██   ██░▓▓█  ░██░   ░▓█▄   ▌░██░▒▓█  ▄ ░▓█▄   ▌
+  ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░▒████▓ ░██░░▒████▒░▒████▓ 
+   ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒     ▒▒▓  ▒ ░▓  ░░ ▒░ ░ ▒▒▓  ▒ 
+ ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░     ░ ▒  ▒  ▒ ░ ░ ░  ░ ░ ▒  ▒ 
+ ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░     ░ ░  ░  ▒ ░   ░    ░ ░  ░ 
+ ░ ░         ░ ░     ░           ░     ░     ░  ░   ░    
+ ░ ░                           ░                  ░      
+");
+      Environment.Exit(0);
     }
   }
 }

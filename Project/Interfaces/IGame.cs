@@ -6,7 +6,8 @@ namespace guildAdventure.Project.Interfaces
   {
     IRoom CurrentRoom { get; set; }
     IPlayer CurrentPlayer { get; set; }
-    ICharacter Character { get; set; }
+    // ICharacter Character { get; set; }
+    // IGuild Guild { get; set; }
 
     void Setup();
   }

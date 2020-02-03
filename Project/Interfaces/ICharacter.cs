@@ -5,7 +5,7 @@ namespace guildAdventure.Project.Interfaces
 {
   public interface ICharacter
   {
-    IRoom Location { get; set; }
+    // IGuild Guild { get; set; }
     string Name { get; set; }
     string Description { get; set; }
     int Health { get; set; }

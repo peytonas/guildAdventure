@@ -22,16 +22,20 @@ namespace guildAdventure.Project.Interfaces
     // //NOTE if it does change the CurrentRoom
     void Go(string direction);
     void GrabItem(string itemName);
-    void GiveTo(string input);
-    void TakeFrom(string input);
+    void Use(string itemName);
+    // void GiveTo(string input);
+    // void TakeFrom(string input);
     // void UseItem(string itemName);
     // //NOTE Print the list of items in the players inventory to the console
     void Inventory();
-    void AddToParty(string input);
-    void ViewCharacter(string characterName);
+    // void AddToParty(string input);
+    void Attack(string input);
+    // void GameOver();
+    // void ViewCharacter(string characterName);
     // void CharacterInventory(string characterName);
     // //NOTE Display the CurrentRoom Description, Exits, and Items
     void Look();
+    void GameOver();
 
     // #endregion
   }
